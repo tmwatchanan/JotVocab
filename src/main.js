@@ -4,6 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import VueRouter from 'vue-router';
 import { routes } from './routes'; // routes.js
+import { config } from './helpers/firebaseConfig'
+import firebase from 'firebase'
+import firebaseui from 'firebaseui';
 
 Vue.use(VueRouter);
 
@@ -20,4 +23,14 @@ new Vue({
   template: '<App/>',
   components: { App },
   router: router,
+  created() {
+    firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push('/success')
+      } else {
+        this.$router.push('/auth')
+      }
+    });
+  }
 })
