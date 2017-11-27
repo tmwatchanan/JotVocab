@@ -4,6 +4,12 @@
 
 This project is built using Vue.js webpack template (`vue init webpack JotVocab`)
 
+#### Related Global Packages
++
+
+#### Related Local Dependencies
++ vue-router
+
 ## Build Setup
 
 ``` bash

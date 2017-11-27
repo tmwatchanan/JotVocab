@@ -2,6 +2,12 @@
   <div id="app">
     <img src="./assets/logo.png">
     <HelloWorld/>
+    <hr>
+    <router-link to="/" tag="li" active-class="active" exact><a>Home</a></router-link>
+    <router-link to="/login" tag="li" active-class="active" exact><a>Login</a></router-link>
+    <transition name="slide" mode="out-in">
+        <router-view></router-view>
+    </transition>
   </div>
 </template>
 
