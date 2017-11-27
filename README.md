@@ -2,6 +2,8 @@
 
 > CPE405 final project
 
+This project is built using Vue.js webpack template (`vue init webpack JotVocab`)
+
 ## Build Setup
 
 ``` bash
