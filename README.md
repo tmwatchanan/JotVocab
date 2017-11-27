@@ -8,7 +8,9 @@ This project is built using Vue.js webpack template (`vue init webpack JotVocab`
 +
 
 #### Related Local Dependencies
-+ vue-router
++ vue-router@3.0.1
++ firebase@4.6.2
++ firebaseui@2.5.1
 
 ## Build Setup
 
