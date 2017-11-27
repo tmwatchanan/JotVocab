@@ -13,6 +13,7 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "firebase";
+import router from '../router';
 
 export default {
   name: "hello",
@@ -32,6 +33,7 @@ export default {
         .auth()
         .signOut()
         .then(this.onSignOut, this.onError);
+      router.go({ path: '/', force: true })
     },
     onSignOut() {
       console.log("onSignOut");

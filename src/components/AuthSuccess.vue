@@ -2,7 +2,7 @@
   <div>
     Success signups
     <pre>
-      {{user}}  
+      {{user}}
     </pre>
   </div>
 </template>

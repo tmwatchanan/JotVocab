@@ -19,7 +19,7 @@ const checkFromAuth = (to, from, next) => {
 };
 
 const router = new VueRouter({
-    mode: 'hash', //history
+    mode: 'history', //hash
     routes: [
         { path: '/', component: Home, beforeEnter: checkFromAuth },
         { path: '/auth', component: Auth },

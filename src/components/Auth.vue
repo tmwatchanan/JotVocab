@@ -7,12 +7,12 @@
 import { mapGetters } from "vuex";
 import firebase from "firebase";
 const uiConfig = {
-  signInSuccessUrl: "/#/success",
+  signInSuccessUrl: "/success",
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     firebase.auth.EmailAuthProvider.PROVIDER_ID
   ],
-  tosUrl: "/#tos"
+  tosUrl: "/tos"
 };
 export default {
   name: "auth",
