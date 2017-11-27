@@ -3,19 +3,17 @@
 import Vue from 'vue'
 import App from './App'
 import VueRouter from 'vue-router';
-import { routes } from './routes'; // routes.js
-import { config } from './helpers/firebaseConfig'
-import firebase from 'firebase'
-import firebaseui from 'firebaseui';
+import router from './router';
+import { FBApp, FBUIApp } from './helpers/firebaseConfig'
+import store from './store';
 
 Vue.use(VueRouter);
 
-const router = new VueRouter({
-  routes: routes, // or just 'routes' in ES6
-  mode: 'history'
-});
-
 Vue.config.productionTip = false
+
+FBApp.auth().onAuthStateChanged(user => store.commit('SET_USER', user));
+store.commit('SET_FB_APP', FBApp);
+store.commit('SET_FB_UI_APP', FBUIApp);
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,14 +21,5 @@ new Vue({
   template: '<App/>',
   components: { App },
   router: router,
-  created() {
-    firebase.initializeApp(config);
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.$router.push('/success')
-      } else {
-        this.$router.push('/auth')
-      }
-    });
-  }
+  store
 })

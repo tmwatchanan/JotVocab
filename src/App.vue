@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <HelloWorld/>
     <hr>
     <router-link to="/" tag="li" active-class="active" exact><a>Home</a></router-link>
     <router-link to="/auth" tag="li" active-class="active" exact><a>Login</a></router-link>
@@ -29,6 +28,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

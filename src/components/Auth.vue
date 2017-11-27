@@ -1,24 +1,33 @@
-<template lang="html">
-  <div id="firebaseui-auth-container"></div>
+<template>
+  <div id="firebaseui-auth-container">
+  </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import firebase from "firebase";
-import firebaseui from "firebaseui";
-import { config } from "../helpers/firebaseConfig";
-
+const uiConfig = {
+  signInSuccessUrl: "/#/success",
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID
+  ],
+  tosUrl: "/#tos"
+};
 export default {
   name: "auth",
-  created() {
-    var uiConfig = {
-      signInSuccessUrl: "/success",
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID
-      ]
-    };
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start("#firebaseui-auth-container", uiConfig);
+  computed: {
+    ...mapGetters({
+      fbUiApp: "fbUiApp"
+    })
+  },
+  mounted() {
+    this.fbUiApp.start("#firebaseui-auth-container", uiConfig);
+  },
+  destroyed() {
+    this.fbUiApp.reset();
   }
 };
 </script>
+
+<style src="firebaseui/dist/firebaseui.css"></style>
