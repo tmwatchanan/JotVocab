@@ -8,6 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
+              <i class="icon-home icon-white"></i>
               <router-link to="/" class="nav-link" active-class="active" exact>Home</router-link>
             </li>
             <li class="nav-item">
@@ -21,9 +22,10 @@
             </li>
           </ul>
         </div>
-        <router-link v-if="!user" to="/auth" tag="button" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Login</router-link>
+        <router-link v-if="!user" to="/auth" tag="button" class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</router-link>
         <img v-if="user" :src="user.photoURL" style="height: 38px">
-        <button v-if="user" @click="signOut" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logout</button>
+        <span class="navbar-text"> {{ firstName }}</span>        
+        <button v-if="user" @click="signOut" class="btn btn-outline-danger my-2 my-sm-0" type="submit"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</button>
       </nav>
     </div>
 </template>
@@ -37,7 +39,13 @@ export default {
   computed: {
     ...mapGetters({
       user: "user"
-    })
+    }),
+    firstName() {
+      return this.user.displayName.split(' ').slice(0, -1).join(' ');
+    },
+    lastName() {
+      return this.user.displayName.split(' ').slice(-1).join(' ');
+    }
   },
   methods: {
     signOut() {
@@ -56,3 +64,24 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+</style>
