@@ -4,8 +4,10 @@ import VueRouter from 'vue-router';
 import router from './router';
 import { FBApp, FBUIApp } from './helpers/firebaseConfig'
 import store from './store';
+import VueResource from 'vue-resource';
 
 Vue.use(VueRouter);
+Vue.use(VueResource);
 
 Vue.config.productionTip = false
 
