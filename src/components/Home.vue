@@ -1,12 +1,13 @@
 <template>
       <div class="hello">
-        <h1>{{ msg }}</h1>
-        <ul>
-        <router-link to="/auth">Go to auth</router-link>
-        <button v-if="user" @click="signOut">Sign out</button>
-        </ul>
-        <img :src="user.photoURL" style="height: 120px"> <br> 
-        <pre>current user: {{user}}</pre>
+        <h2>{{ msg }}</h2>
+
+        <!-- <ul> -->
+        <!-- <router-link to="/auth">Go to auth</router-link>
+        <button v-if="user" @click="signOut">Sign out</button> -->
+        <!-- </ul> -->
+        <!-- <img :src="user.photoURL" style="height: 120px"> <br>  -->
+        <!-- <pre>current user: {{user}}</pre> -->
     </div>
 </template>
 
@@ -19,7 +20,7 @@ export default {
   name: "hello",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: "Welcome to JotVocab App"
     };
   },
   computed: {

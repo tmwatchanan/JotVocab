@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <navigation-bar/>
-    <img src="./assets/logo.png">
+    <!-- <img src="./assets/logo.png"> -->
     <hr>
     <!-- <router-link to="/" tag="li" active-class="active" exact><a>Home</a></router-link>
     <router-link to="/auth" tag="li" active-class="active" exact><a>Login</a></router-link> -->
