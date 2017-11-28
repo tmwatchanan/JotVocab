@@ -2,12 +2,12 @@ import firebase from 'firebase';
 import firebaseui from 'firebaseui';
 
 const config = {
-    apiKey: "AIzaSyDI5lMf2oE_5RlUb0hVt-cBn3AfAy1Yynk",
-    authDomain: "note-app-83bf9.firebaseapp.com",
-    databaseURL: "https://note-app-83bf9.firebaseio.com",
-    projectId: "note-app-83bf9",
-    storageBucket: "note-app-83bf9.appspot.com",
-    messagingSenderId: "75507176619"
+    apiKey: "AIzaSyAE_63kvd7GIN_KfPnUmo4CooWFaEWVlYQ",
+    authDomain: "jotvocab.firebaseapp.com",
+    databaseURL: "https://jotvocab.firebaseio.com",
+    projectId: "jotvocab",
+    storageBucket: "jotvocab.appspot.com",
+    messagingSenderId: "715646011817"
 };
 
 export const FBApp = firebase.initializeApp(config);
