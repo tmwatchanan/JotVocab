@@ -17,7 +17,7 @@
 import { mapGetters } from "vuex";
 import firebase from "firebase";
 import router from "../router";
-import oxfordAPIConfig from "../helpers/apiConfigs";
+import { wordAPIConfig } from "../helpers/apiConfigs";
 
 export default {
   name: "hello",
@@ -49,11 +49,18 @@ export default {
     fetchData() {
       this.$http
         .get(
-          "https://od-api.oxforddictionaries.com:443/api/v1/entries/en/tommy",
+          "https://wordsapiv1.p.mashape.com/words/sound",
+          {
+            headers: {
+              'X-Mashape-Key': wordAPIConfig.key
+            }
+          }
         )
         .then(response => {
-          console.log(response.json());
           return response.json(); // return an a javascript object
+        })
+        .then(data => {
+          this.entry = data;
         });
     }
   },
