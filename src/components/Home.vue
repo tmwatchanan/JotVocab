@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       msg: "Welcome to JotVocab App",
+      searchWord: "computer",
       entry: ""
     };
   },
@@ -49,7 +50,7 @@ export default {
     fetchData() {
       this.$http
         .get(
-          "https://wordsapiv1.p.mashape.com/words/sound",
+          "https://wordsapiv1.p.mashape.com/words/" + this.searchWord,
           {
             headers: {
               'X-Mashape-Key': wordAPIConfig.key
