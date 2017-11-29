@@ -9,6 +9,7 @@
         <!-- <img :src="user.photoURL" style="height: 120px"> <br>  -->
         <!-- <pre>current user: {{user}}</pre> -->
         <hr/>
+        Search word: <input @keyup.enter="searchWordInDict" v-model.trim="searchWord">
         <pre>{{ this.entry }}</pre>
     </div>
 </template>
@@ -47,10 +48,10 @@ export default {
     onError() {
       console.error("onError");
     },
-    fetchData() {
+    searchWordInDict() {
       this.$http
         .get(
-          "https://wordsapiv1.p.mashape.com/words/" + this.searchWord,
+          "https://wordsapiv1.p.mashape.com/words/" + this.searchWord + "/definition",
           {
             headers: {
               'X-Mashape-Key': wordAPIConfig.key
@@ -66,7 +67,7 @@ export default {
     }
   },
   created() {
-    this.fetchData();
+    this.searchWordInDict();
   }
 };
 </script>
