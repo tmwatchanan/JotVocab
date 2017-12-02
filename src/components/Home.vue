@@ -69,7 +69,12 @@ export default {
           var tb = document.getElementById("definition_table");
           tb.innerHTML =
             "<tr><td>No.</td><td>Definition</td><td>Synonym</td><td>Examples</td></tr>";
-          for (var i = 0; i < this.entry.results.length; i++) {
+
+          var resultlength = 0;
+          if (this.entry.results.length < 5)
+            resultlength = this.entry.results.length;
+          else resultlength = 5;
+          for (var i = 0; i < resultlength; i++) {
             var result = this.entry.results[i];
 
             var tr = document.createElement("tr");
@@ -88,49 +93,43 @@ export default {
             def.innerHTML += result.definition;
             document.getElementById("row" + i).appendChild(def);
 
-            var syn = document.createElement("td");
-            syn.setAttribute("id", "syn" + i);
-            document.getElementById("row" + i).appendChild(syn);
+            var syntd = document.createElement("td");
+            syntd.setAttribute("id", "syntd" + i);
+            document.getElementById("row" + i).appendChild(syntd);
 
-            var syntb = document.createElement("table");
-            syntb.setAttribute("id", "syntb" + i);
-            document.getElementById("syn" + i).appendChild(syntb);
+            var synul = document.createElement("ul");
+            synul.setAttribute("id", "synul" + i);
+            document.getElementById("syntd" + i).appendChild(synul);
 
             if (result.synonyms != null) {
               var synno = 0;
               if (result.synonyms.length < 3) synno = result.synonyms.length;
               else synno = 3;
-              for (var j = 0; j < synno; j++) {
-                var syntr = document.createElement("tr");
-                syntr.setAttribute("id", "syntr" + i + j);
-                document.getElementById("syntb" + i).appendChild(syntr);
 
-                var syntd = document.createElement("td");
-                syntd.appendChild(document.createTextNode(result.synonyms[j]));
-                document.getElementById("syntr" + i + j).appendChild(syntd);
+              for (var j = 0; j < synno; j++) {
+                var synli = document.createElement("li");
+                synli.appendChild(document.createTextNode(result.synonyms[j]));
+                document.getElementById("synul" + i).appendChild(synli);
               }
             }
 
-            var ex = document.createElement("td");
-            ex.setAttribute("id", "ex" + i);
-            document.getElementById("row" + i).appendChild(ex);
+            var extd = document.createElement("td");
+            extd.setAttribute("id", "extd" + i);
+            document.getElementById("row" + i).appendChild(extd);
 
-            var extb = document.createElement("table");
-            extb.setAttribute("id", "extb" + i);
-            document.getElementById("ex" + i).appendChild(extb);
+            var exul = document.createElement("ul");
+            exul.setAttribute("id", "exul" + i);
+            document.getElementById("extd" + i).appendChild(exul);
 
             if (result.examples != null) {
               var exno = 0;
               if (result.examples.length < 3) exno = result.examples.length;
               else exno = 3;
-              for (var j = 0; j < exno; j++) {
-                var extr = document.createElement("tr");
-                extr.setAttribute("id", "extr" + i + j);
-                document.getElementById("extb" + i).appendChild(extr);
 
-                var extd = document.createElement("td");
-                extd.appendChild(document.createTextNode(result.examples[j]));
-                document.getElementById("extr" + i + j).appendChild(extd);
+              for (var j = 0; j < exno; j++) {
+                var exli = document.createElement("li");
+                exli.appendChild(document.createTextNode(result.examples[j]));
+                document.getElementById("exul" + i).appendChild(exli);
               }
             }
           }
