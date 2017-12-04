@@ -30,7 +30,7 @@ export default {
     return {
       msg: "Welcome to JotVocab App",
       searchWord: "computer",
-      entry: ""
+      entry: "",
     };
   },
   computed: {
@@ -124,12 +124,26 @@ export default {
       responsiveVoice.speak(this.entry.word);
     },
     submitdata() {
+      // console.log(this.user);
       var Data = {
         uid: this.user.uid,
+        token: this.user.accessToken,
         word: this.entry.word,
         comment: document.getElementById("comment").value
       };
-      console.log(Data);
+      var getToken;
+      // firebase.auth().onAuthStateChanged(function(user) {
+      //   if (user) {
+      //     user.getIdToken(true).then(function(data) {
+      //       // console.log(data)
+      //       getToken = data;
+      //     });
+      //   }
+      // });
+        // console.log("idToken = " + idToken);
+        // getToken = idToken;
+      console.log(getToken);
+      // console.log(Data);
       this.$http.post("https://jotvocab-api.herokuapp.com/vocab", Data,
           {
             emulateJSON: true
