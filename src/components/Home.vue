@@ -145,6 +145,26 @@ export default {
         comment: document.getElementById("comment").value
       };
       console.log(Data);
+      this.$http.post("http://localhost:8888/vocab", Data,
+          {
+            emulateJSON: true
+          //   params: {
+          //     id: this.uid
+          //   }
+          }
+        )
+        .then(
+          response => {
+            // define how to deal with the response
+            console.log(response);
+            alert("A new vocab has been added.");
+            // this.fetchData();
+          },
+          error => {
+            // define how to deal with error
+            console.log(error);
+          }
+        );
     }
   },
   created() {
