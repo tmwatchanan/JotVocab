@@ -14,6 +14,7 @@ const uiConfig = {
   ],
   tosUrl: "/tos"
 };
+
 export default {
   name: "auth",
   computed: {
