@@ -175,11 +175,11 @@ body * {
   text-transform: uppercase;
 }
 
-img {
+/* img {
   border-radius: 50%;
   height: 60px;
   width: 60px;
-}
+} */
 
 .table-users {
   border: 1px solid #327a81;
