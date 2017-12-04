@@ -1,12 +1,6 @@
 <template>
       <div class="hello">
         <h2>{{ msg }}</h2>
-
-        <!-- <ul> -->
-        <!-- <router-link to="/auth">Go to auth</router-link>
-        <button v-if="user" @click="signOut">Sign out</button> -->
-        <!-- </ul> -->
-        <!-- <img :src="user.photoURL" style="height: 120px"> <br>  -->
         <!-- <pre>current user: {{user}}</pre> -->
         <hr/>
         <div id="search-box">
@@ -45,19 +39,6 @@ export default {
     })
   },
   methods: {
-    signOut() {
-      firebase
-        .auth()
-        .signOut()
-        .then(this.onSignOut, this.onError);
-      router.go({ path: "/", force: true });
-    },
-    onSignOut() {
-      console.log("onSignOut");
-    },
-    onError() {
-      console.error("onError");
-    },
     searchWordInDict() {
       this.$http
         .get("https://wordsapiv1.p.mashape.com/words/" + this.searchWord, {
@@ -149,7 +130,7 @@ export default {
         comment: document.getElementById("comment").value
       };
       console.log(Data);
-      this.$http.post("http://localhost:8888/vocab", Data,
+      this.$http.post("https://jotvocab-api.herokuapp.com/vocab", Data,
           {
             emulateJSON: true
           //   params: {

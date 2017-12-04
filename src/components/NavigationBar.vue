@@ -14,6 +14,9 @@
             <li class="nav-item">
               <router-link to="/dictionary" class="nav-link" active-class="active" exact>Dictionary</router-link>
             </li>
+            <li class="nav-item">
+              <router-link to="/myvocabs" class="nav-link" active-class="active" exact>MyVocabs</router-link>
+            </li>
           </ul>
         </div>
         <router-link v-if="!user" to="/auth" tag="button" class="btn btn-outline-primary my-2 my-sm-0" type="submit"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</router-link>
