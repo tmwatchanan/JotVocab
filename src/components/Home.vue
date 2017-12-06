@@ -125,26 +125,20 @@ export default {
     },
     submitdata() {
       // console.log(this.user);
-      var Data = {
+      var vm = this;
+      firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        vm.userToken = idToken;
+      }).catch(function(error) {
+        console.log(error);
+      });
+      var data = {
         uid: this.user.uid,
-        token: this.user.accessToken,
+        token: this.userToken,
         word: this.entry.word,
         comment: document.getElementById("comment").value
       };
-      var getToken;
-      // firebase.auth().onAuthStateChanged(function(user) {
-      //   if (user) {
-      //     user.getIdToken(true).then(function(data) {
-      //       // console.log(data)
-      //       getToken = data;
-      //     });
-      //   }
-      // });
-        // console.log("idToken = " + idToken);
-        // getToken = idToken;
-      console.log(getToken);
-      // console.log(Data);
-      this.$http.post("https://jotvocab-api.herokuapp.com/vocab", Data,
+      // console.log(data);
+      this.$http.post("https://jotvocab-api.herokuapp.com/vocab", data,
           {
             emulateJSON: true
           //   params: {

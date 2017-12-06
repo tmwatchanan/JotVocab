@@ -1,6 +1,7 @@
 <template>
   <div>
       <button @click="getMyVocabList">Get MyVocab List</button>
+      <!-- <pre>{{ userToken }}</pre> -->
       <!-- <pre>{{ test }}</pre> -->
       <pre>{{ vocabList }}</pre>
   </div>
@@ -14,7 +15,8 @@ export default {
   data() {
     return {
       vocabList: [],
-      test: ""
+      test: "",
+      userToken: ""
     };
   },
   computed: {
@@ -24,14 +26,18 @@ export default {
   },
   methods: {
     getMyVocabList() {
+      var vm = this;
       this.test = firebase.auth().currentUser;
       firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-        console.log("idToken = " + idToken);
+        vm.userToken = idToken;
       }).catch(function(error) {
-        // Handle error
+        console.log(error);
       });
+      var userCredential = {
+        token: this.userToken
+      };
       this.$http
-        .post("https://jotvocab-api.herokuapp.com/vocabs/" + this.user.uid)
+        .post("https://jotvocab-api.herokuapp.com/vocabs/" + this.user.uid, userCredential)
         .then(response => {
           return response.json(); // return an a javascript object
         })
