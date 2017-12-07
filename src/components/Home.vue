@@ -193,7 +193,6 @@ export default {
           console.log(error);
         });
       var data = {
-        uid: this.user.uid,
         token: this.userToken,
         word: this.entry[0].search,
         definition: $("input[name='selradio']:checked").val(),
