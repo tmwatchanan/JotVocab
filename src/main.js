@@ -5,9 +5,11 @@ import router from './router';
 import { FBApp, FBUIApp } from './helpers/firebaseConfig'
 import store from './store';
 import VueResource from 'vue-resource';
+import SimpleVueValidation from 'simple-vue-validator';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
+Vue.use(SimpleVueValidation);
 
 Vue.config.productionTip = false
 

@@ -38,6 +38,7 @@ This project is built using Vue.js webpack template (`vue init webpack JotVocab`
 + firebase@4.6.2
 + firebaseui@2.5.1
 + vue-resource@1.3.4
++ simple-vue-validator@0.14.1
 
 #### Special Thanks to
 + [rstormsf/friendsmap](https://github.com/rstormsf/friendsmap) for the nice solution of using firebase authentication along with vue _(He also used **Vuex** for managing state inside the app)_

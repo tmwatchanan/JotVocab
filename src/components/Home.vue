@@ -1,15 +1,21 @@
 <template>
       <div class="hello">
-        <h2>{{ msg }}</h2>
+        <h3>{{ msg }}</h3>
         <!-- <pre>current user: {{user}}</pre> -->
         <!-- <pre>{{ entry }}</pre> -->
         <hr/>
+        <div class="label">Search word: </div>
         <div id="search-box">
-          <div style="width: 30%; margin: auto;">
-          Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord" class="form-control">
-          </div>
+            <div class="layout-form">
+              <div class="form-group" :class="{error: validation.hasError('user.email')}">
+                <div class="col-lg-3 center-block" style="margin: auto;">
+                  <input @keyup.enter="searchWordInDict" v-model.trim="searchWord" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div style="font-weight: bold; color: red" class="message">{{ validation.firstError('searchWord') }}</div>
           <br>
-          <span id="first" style="color: red;">Press Enter to Search Any Word...</span>
+          <!-- <span id="first" style="color: red;">Press Enter to Search Any Word...</span> -->
         </div>
         <div id="definition" class="table-users" style="visibility: hidden;">
           <div class="header">
@@ -32,7 +38,7 @@ import { mapGetters } from "vuex";
 import firebase from "firebase";
 import router from "../router";
 import { wordAPIConfig } from "../helpers/apiConfigs";
-import SimpleVueValidation from 'simple-vue-validator';
+import SimpleVueValidation from "simple-vue-validator";
 var Validator = SimpleVueValidation.Validator;
 
 export default {
@@ -53,7 +59,10 @@ export default {
     searchWord: function(value) {
       return Validator.value(value)
         .required()
-        .regex("^[A-Za-z ]*$", "Must only contain alphabetic characters.");
+        .regex(
+          "^[A-Za-z ]*$",
+          "Must only contain English alphabetic characters."
+        );
     }
   },
   methods: {
@@ -207,52 +216,56 @@ export default {
     },
     submitdata() {
       // console.log(this.user);
-      var vm = this;
-      firebase.auth().onAuthStateChanged(function(currentUser) {
-        if (currentUser) {
-          currentUser
-            .getIdToken(/* forceRefresh */ true)
-            .then(function(idToken) {
-              vm.userToken = idToken;
-              var data = {
-                uid: vm.user.uid,
-                token: vm.userToken,
-                word: vm.entry[0].search,
-                definition: $("input[name='selradio']:checked").val(),
-                comment: document.getElementById("comment").value
-              };
-              console.log(data);
-              vm.$http
-                .post(
-                  "https://jotvocab-api.herokuapp.com/vocab/user/add",
-                  data,
-                  {
-                    emulateJSON: true
-                    //   params: {
-                    //     id: vm.uid
-                    //   }
-                  }
-                )
-                .then(
-                  response => {
-                    // define how to deal with the response
-                    console.log(response);
-                    alert("A new vocab has been added.");
-                    // vm.fetchData();
-                  },
-                  error => {
-                    // define how to deal with error
-                    console.log(error);
-                    alert("This word and definition are already existed!");
-                  }
-                );
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
-        } else {
-          // user NOT found
-          console.log("User NOT found!");
+      this.$validate().then(function(success) {
+        if (success) {
+          var vm = this;
+          firebase.auth().onAuthStateChanged(function(currentUser) {
+            if (currentUser) {
+              currentUser
+                .getIdToken(/* forceRefresh */ true)
+                .then(function(idToken) {
+                  vm.userToken = idToken;
+                  var data = {
+                    uid: vm.user.uid,
+                    token: vm.userToken,
+                    word: vm.entry[0].search,
+                    definition: $("input[name='selradio']:checked").val(),
+                    comment: document.getElementById("comment").value
+                  };
+                  console.log(data);
+                  vm.$http
+                    .post(
+                      "https://jotvocab-api.herokuapp.com/vocab/user/add",
+                      data,
+                      {
+                        emulateJSON: true
+                        //   params: {
+                        //     id: vm.uid
+                        //   }
+                      }
+                    )
+                    .then(
+                      response => {
+                        // define how to deal with the response
+                        console.log(response);
+                        alert("A new vocab has been added.");
+                        // vm.fetchData();
+                      },
+                      error => {
+                        // define how to deal with error
+                        console.log(error);
+                        alert("This word and definition are already existed!");
+                      }
+                    );
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+            } else {
+              // user NOT found
+              console.log("User NOT found!");
+            }
+          });
         }
       });
     }
@@ -429,5 +442,148 @@ table tr:nth-child(2n + 1) {
     box-shadow: none;
     overflow: visible;
   }
+}
+
+.layout-form .form-group {
+  display: flex;
+  margin: 15px 0;
+}
+
+.layout-form .form-group .label {
+  width: 20%;
+  padding: 10px 10px 0 0;
+  font-weight: bold;
+  color: #374853;
+  text-align: right;
+}
+
+.layout-form .form-group.error .label {
+  color: #ff6666;
+}
+
+.layout-form .form-group .content {
+  width: 50%;
+  min-width: 120px;
+}
+
+.layout-form .form-group .content label {
+  display: inline-block;
+  padding: 5px 20px 0 0;
+}
+
+.layout-form .form-group .message {
+  flex: 1;
+  padding: 5px 0 0 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: bold;
+}
+
+.layout-form .form-group.error .message {
+  color: #ff6666;
+}
+
+.layout-form .form-group .form-control {
+  font-size: 14px;
+}
+
+.layout-form .form-group .actions {
+  margin-left: 100px;
+  width: 50%;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .layout-form {
+    font-size: 12px;
+  }
+
+  .layout-form .form-group .label {
+    width: 60px;
+    padding-right: 10px;
+  }
+
+  .layout-form .form-group .form-control {
+    font-size: 12px;
+  }
+
+  .layout-form .form-group .actions {
+    margin-left: 60px;
+  }
+}
+
+.layout-form .form-group input[type="text"].form-control,
+.layout-form .form-group input[type="password"].form-control {
+  width: 100%;
+  font-weight: lighter;
+  padding: 4px 6px;
+  border: solid #acacac 1px;
+  outline: none;
+}
+
+.layout-form .form-group input[type="text"].form-control:focus,
+.layout-form .form-group input[type="password"].form-control:focus {
+  border-color: #374853;
+}
+
+.layout-form .form-group.error input[type="text"].form-control,
+.layout-form .form-group.error input[type="password"].form-control,
+.layout-form .form-group.error input[type="text"].form-control:focus,
+.layout-form .form-group.error input[type="password"].form-control:focus {
+  border-color: #ff6666;
+}
+
+.layout-form .form-group .btn {
+  font-size: 12px;
+  font-weight: normal;
+  padding: 6px 10px;
+  border-radius: 4px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.layout-form .form-group .btn + .btn {
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .layout-form .form-group .btn {
+    padding: 3px 6px;
+  }
+
+  .layout-form .form-group .btn + .btn {
+    margin-left: 4px;
+  }
+}
+
+.layout-form .form-group .btn-primary {
+  color: #fff;
+  background-color: #41b883;
+  border: solid #39a073 1px;
+}
+
+.layout-form .form-group .btn-primary:focus {
+  background-color: #3dad7c;
+}
+
+.layout-form .form-group .btn-primary:active {
+  background-color: #39a073;
+}
+
+.layout-form .form-group .btn-default {
+  color: #374853;
+  background-color: #fff;
+  border: solid #acacac 1px;
+}
+
+.layout-form .form-group .btn-default:focus {
+  background-color: #eee;
+}
+
+.layout-form .form-group .btn-default:active {
+  background-color: #ccc;
 }
 </style>
