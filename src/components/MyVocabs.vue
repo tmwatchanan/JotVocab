@@ -9,7 +9,16 @@
           <h4>{{ this.user.displayName }}'s List</h4>
         </div>
         <table id="vocablist" cellspacing="0">
-          <tr><th>Times</th><th>Word</th><th>Definition</th><th>Comment</th></tr>
+          <thead><tr><th>Times</th><th>Word</th><th>Definition</th><th>Comment</th><th>Delete?</th></tr></thead>
+          <tbody>
+            <tr v-for="(row, index) in this.vocabList">
+              <td on>{{ new Date(row.timestamp).getMonth() + "/" + new Date(row.timestamp).getDate() + "/"  + new Date(row.timestamp).getFullYear() + " \n " + new Date(row.timestamp).getHours() + ":" + new Date(row.timestamp).getMinutes() + ":" + new Date(row.timestamp).getSeconds()}}</td>
+              <td>{{ row.word }} <input id="play" align="right" @click="playsound(row.word)" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 15px; height: 15px;" /></td>
+              <td>{{ row.definition }}</td>
+              <td>{{ row.comment }} <input id="edit" @click="editComment(index)" type="image" src="https://image.flaticon.com/icons/svg/61/61456.svg" value="Delete" style="width: 15px; height: 15px;" /></td>
+              <td><input id="bin" @click="deleteWord(index)" type="image" src="https://d30y9cdsu7xlg0.cloudfront.net/png/446206-200.png" value="Delete" style="width: 15px; height: 15px;" /></td>
+            </tr>
+          </tbody>
         </table>
       </div>
   </div>
@@ -49,66 +58,6 @@ export default {
                 })
                 .then(data => {
                   vm.vocabList = data.words;
-
-                  var tb = document.getElementById("vocablist");
-
-                  for (var i = 0; i < vm.vocabList.length; i++) {
-                    var result = vm.vocabList[i];
-
-                    var tr = document.createElement("tr");
-                    tr.setAttribute("id", "row" + i);
-                    tb.appendChild(tr);
-
-                    var t = new Date(Number(vm.vocabList[i].timestamp));
-
-                    var times = document.createElement("td");
-                    times.appendChild(
-                      document.createTextNode(
-                        t.getMonth() +
-                          "/" +
-                          t.getDate() +
-                          "/" +
-                          t.getFullYear() +
-                          " " +
-                          t.getHours() +
-                          ":" +
-                          t.getMinutes() +
-                          ":" +
-                          t.getSeconds()
-                      )
-                    );
-                    document.getElementById("row" + i).appendChild(times);
-
-                    var word = document.createElement("td");
-                    word.appendChild(
-                      document.createTextNode(vm.vocabList[i].word)
-                    );
-                    // word.innerHTML += '<input align="right" @click="playsound(\'' + vm.vocabList[i].word + '\')" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" />';
-                    var play = document.createElement("input");
-                    play.setAttribute("type", "image");
-                    play.setAttribute(
-                      "src",
-                      "http://www.freeiconspng.com/uploads/speaker-icon-27.png"
-                    );
-                    play.setAttribute(
-                      "onClick",
-                      'responsiveVoice.speak("' + vm.vocabList[i].word + '")'
-                    );
-                    play.style.height = "15px";
-                    play.style.width = "15px";
-                    word.appendChild(play);
-                    document.getElementById("row" + i).appendChild(word);
-
-                    var def = document.createElement("td");
-                    def.innerHTML = vm.vocabList[i].definition;
-                    document.getElementById("row" + i).appendChild(def);
-
-                    var comment = document.createElement("td");
-                    comment.appendChild(
-                      document.createTextNode(vm.vocabList[i].comment)
-                    );
-                    document.getElementById("row" + i).appendChild(comment);
-                  }
                 });
             })
             .catch(function(error) {
@@ -119,6 +68,105 @@ export default {
     },
     playsound(word) {
       responsiveVoice.speak(word);
+    },
+    deleteWord(index) {
+      var vm = this;
+      var r = confirm("Are you sure?");
+      if (r == true) {
+        firebase.auth().onAuthStateChanged(function(currentUser) {
+          if (currentUser) {
+            currentUser
+              .getIdToken(/* forceRefresh */ true)
+              .then(function(idToken) {
+                vm.userToken = idToken;
+                var data = {
+                  token: vm.userToken,
+                  word: vm.vocabList[index].word,
+                  definition: vm.vocabList[index].definition
+                };
+                console.log(data);
+                vm.$http
+                  .delete(
+                    "https://jotvocab-api.herokuapp.com/vocab/user/delete",
+                    data,
+                    {
+                      emulateJSON: true
+                      //   params: {
+                      //     id: vm.uid
+                      //   }
+                    }
+                  )
+                  .then(
+                    response => {
+                      // define how to deal with the response
+                      console.log(response);
+                      alert("Vocab Has Deleted.");
+                      // vm.fetchData();
+                    },
+                    error => {
+                      // define how to deal with error
+                      console.log(error);
+                      alert("This word and definition are already existed!");
+                    }
+                  );
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+        });
+      }
+    },
+    editComment(index) {
+      var vm = this;
+      var r = prompt("Edit Your Comment : ", vm.vocabList[index].comment);
+      if (r != null) {
+        // console.log(r);
+        firebase.auth().onAuthStateChanged(function(currentUser) {
+          if (currentUser) {
+            currentUser
+              .getIdToken(/* forceRefresh */ true)
+              .then(function(idToken) {
+                vm.userToken = idToken;
+                var data = {
+                  token: vm.userToken,
+                  word: vm.vocabList[index].word,
+                  definition: vm.vocabList[index].definition,
+                  comment: r
+                };
+                console.log(data);
+                vm.$http
+                  .put(
+                    "https://jotvocab-api.herokuapp.com/vocab/user/edit",
+                    data,
+                    {
+                      emulateJSON: true
+                      //   params: {
+                      //     id: vm.uid
+                      //   }
+                    }
+                  )
+                  .then(
+                    response => {
+                      // define how to deal with the response
+                      console.log(response);
+                      alert("Vocab's comment has been edited.");
+                      // vm.fetchData();
+                      location.reload();
+                    },
+                    error => {
+                      // define how to deal with error
+                      console.log(error);
+                      alert("This word and definition are already existed!");
+                    }
+                  );
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          }
+        });
+      }
     }
   },
   created() {

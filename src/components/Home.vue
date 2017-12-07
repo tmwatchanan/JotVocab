@@ -198,7 +198,7 @@ export default {
             }
             select.setAttribute(
               "value",
-              document.getElementById("def" + i).innerHTML
+              result.result
             );
             document.getElementById("row" + i).appendChild(select);
             document.getElementById("select" + i).style.margin = "10px";
