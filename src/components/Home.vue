@@ -2,19 +2,25 @@
       <div class="hello">
         <h2>{{ msg }}</h2>
         <!-- <pre>current user: {{user}}</pre> -->
+        <!-- <pre>{{ entry }}</pre> -->
         <hr/>
-        <div id="search-box">
+        <div id="search-box"v style="margin: 10px;">
           Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord">
+          <br>
+          <span id="first" style="color: red;">Press Enter to Search Any Word...</span>
+
         </div>
-        <div class="table-users">
+        <div id="definition" class="table-users" style="visibility: hidden;">
           <div class="header">
-            <span style="display: inline-flex;"><h1>{{ this.entry.word }}</h1>  <input align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
+            <span style="display: inline-flex;"><h1>{{ this.entry[0].search }}</h1>  <input align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
           </div>
           <table id="definition_table" cellspacing="0">
           </table>
+          <div style="margin: 10px">
+            Add some comment : <input type="text" id="comment" name="comment">
+            <button @click="submitdata">Submit</button>
+          </div>
         </div>
-        Add some comment : <input type="text" id="comment" name="comment">
-        <button @click="submitdata">Submit</button>
     </div>
 </template>
 
@@ -30,7 +36,7 @@ export default {
     return {
       msg: "Welcome to JotVocab App",
       searchWord: "computer",
-      entry: "",
+      entry: ""
     };
   },
   computed: {
@@ -41,26 +47,23 @@ export default {
   methods: {
     searchWordInDict() {
       this.$http
-        .get("https://wordsapiv1.p.mashape.com/words/" + this.searchWord, {
-          headers: {
-            "X-Mashape-Key": wordAPIConfig.key
-          }
-        })
+        .get("http://jotvocab-api.herokuapp.com/thaidict/" + this.searchWord)
         .then(response => {
           return response.json(); // return an a javascript object
         })
         .then(data => {
           this.entry = data;
+
+          $("#first").remove();
+
+          document.getElementById("definition").style.visibility = "visible";
+
           var tb = document.getElementById("definition_table");
           tb.innerHTML =
-            "<tr><th>No.</th><th>Definition</th><th>Synonym</th><th>Examples</th></tr>";
+            "<tr><th>No.</th><th>Definition</th><th>Synonym</th><th>Select</th></tr>";
 
-          var resultlength = 0;
-          if (this.entry.results.length < 5)
-            resultlength = this.entry.results.length;
-          else resultlength = 5;
-          for (var i = 0; i < resultlength; i++) {
-            var result = this.entry.results[i];
+          for (var i = 0; i < this.entry.length; i++) {
+            var result = this.entry[i];
 
             var tr = document.createElement("tr");
             tr.setAttribute("id", "row" + i);
@@ -71,11 +74,74 @@ export default {
             document.getElementById("row" + i).appendChild(n);
 
             var def = document.createElement("td");
-            if (result.partOfSpeech != null) {
-              def.innerHTML =
-                '<em style="color: red">[' + result.partOfSpeech + "]</em> ";
+            if (result.type != null) {
+              var type = "";
+              switch (result.type) {
+                case "ABBR":
+                  type = "Abbreviation";
+                  break;
+                case "ADJ":
+                  type = "Adjective";
+                  break;
+                case "ADV":
+                  type = "Adverb";
+                  break;
+                case "AUX":
+                  type = "Auxiliary verb";
+                  break;
+                case "CLAS":
+                  type = "Classifier";
+                  break;
+                case "CONJ":
+                  type = "Conjunction";
+                  break;
+                case "DET":
+                  type = "Determiner";
+                  break;
+                case "IDM":
+                  type = "Idiom";
+                  break;
+                case "INT":
+                  type = "Interjection";
+                  break;
+                case "N":
+                  type = "Noun";
+                  break;
+                case "PHRV":
+                  type = "Pharse verb";
+                  break;
+                case "PREP":
+                  type = "Preposition";
+                  break;
+                case "PRF":
+                  type = "Prefix";
+                  break;
+                case "PRON":
+                  type = "Pronoun";
+                  break;
+                case "SL":
+                  type = "Slang";
+                  break;
+                case "SUF":
+                  type = "Suffix";
+                  break;
+                case "V":
+                  type = "verb";
+                  break;
+                case "VI":
+                  type = "Transitive verb";
+                  break;
+                case "VT":
+                  type = "Intransitive verb";
+                  break;
+                case "VI, VT":
+                  type = "Intransitive and Transitive verb";
+                  break;
+              }
+
+              def.innerHTML = '<em style="color: red">[' + type + "]</em> ";
             }
-            def.innerHTML += result.definition;
+            def.innerHTML += result.result;
             document.getElementById("row" + i).appendChild(def);
 
             var syntd = document.createElement("td");
@@ -86,66 +152,61 @@ export default {
             synul.setAttribute("id", "synul" + i);
             document.getElementById("syntd" + i).appendChild(synul);
 
-            if (result.synonyms != null) {
+            if (result.synonym != null) {
               var synno = 0;
-              if (result.synonyms.length < 3) synno = result.synonyms.length;
+              if (result.synonym.length < 3) synno = result.synonym.length;
               else synno = 3;
 
               for (var j = 0; j < synno; j++) {
                 var synli = document.createElement("li");
-                synli.appendChild(document.createTextNode(result.synonyms[j]));
+                synli.appendChild(document.createTextNode(result.synonym[j]));
                 document.getElementById("synul" + i).appendChild(synli);
               }
             }
 
-            var extd = document.createElement("td");
-            extd.setAttribute("id", "extd" + i);
-            document.getElementById("row" + i).appendChild(extd);
-
-            var exul = document.createElement("ul");
-            exul.setAttribute("id", "exul" + i);
-            document.getElementById("extd" + i).appendChild(exul);
-
-            if (result.examples != null) {
-              var exno = 0;
-              if (result.examples.length < 3) exno = result.examples.length;
-              else exno = 3;
-
-              for (var j = 0; j < exno; j++) {
-                var exli = document.createElement("li");
-                exli.appendChild(document.createTextNode(result.examples[j]));
-                document.getElementById("exul" + i).appendChild(exli);
-              }
+            var select = document.createElement("INPUT");
+            select.setAttribute("type", "radio");
+            select.setAttribute("name", "selradio");
+            select.setAttribute("id", "select" + i);
+            if (i == 0) {
+              select.checked = true;
             }
+            select.setAttribute("value", result.result);
+            document.getElementById("row" + i).appendChild(select);
+            document.getElementById("select" + i).style.margin = "10px";
           }
         });
     },
     playsound() {
-      responsiveVoice.speak(this.entry.word);
+      responsiveVoice.speak(this.entry[0].search);
     },
     submitdata() {
       // console.log(this.user);
       var vm = this;
-      firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-        vm.userToken = idToken;
-      }).catch(function(error) {
-        console.log(error);
-      });
+      firebase
+        .auth()
+        .currentUser.getIdToken(/* forceRefresh */ true)
+        .then(function(idToken) {
+          vm.userToken = idToken;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
       var data = {
         uid: this.user.uid,
         token: this.userToken,
-        word: this.entry.word,
+        word: this.entry[0].search,
+        definition: $("input[name='selradio']:checked").val(),
         comment: document.getElementById("comment").value
       };
-      // console.log(data);
-      this.$http.post("https://jotvocab-api.herokuapp.com/vocab", data,
-          {
-            emulateJSON: true
+      console.log(data);
+      this.$http
+        .post("https://jotvocab-api.herokuapp.com/vocab", data, {
+          emulateJSON: true
           //   params: {
           //     id: this.uid
           //   }
-          }
-        )
+        })
         .then(
           response => {
             // define how to deal with the response
