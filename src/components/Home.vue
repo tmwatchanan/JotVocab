@@ -201,7 +201,7 @@ export default {
       };
       console.log(data);
       this.$http
-        .post("https://jotvocab-api.herokuapp.com/vocab", data, {
+        .post("https://jotvocab-api.herokuapp.com/vocab/user/add", data, {
           emulateJSON: true
           //   params: {
           //     id: this.uid
