@@ -2,7 +2,7 @@
   <div>
       <button @click="getMyVocabList">Get MyVocab List</button>
       <pre>{{ userToken }}</pre>
-      <!-- <pre>{{ test }}</pre> -->
+      <!-- <pre>{{ user }}</pre> -->
       <pre>{{ vocabList }}</pre>
   </div>
 </template>
@@ -15,7 +15,6 @@ export default {
   data() {
     return {
       vocabList: [],
-      test: "",
       userToken: ""
     };
   },
@@ -27,23 +26,23 @@ export default {
   methods: {
     getMyVocabList() {
       var vm = this;
-      vm.test = firebase.auth().currentUser;
-      firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-        vm.userToken = idToken;
-      }).catch(function(error) {
-        console.log(error);
+      firebase.auth().onAuthStateChanged(function (currentUser) {
+        if (currentUser) {
+          currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+            vm.userToken = idToken;
+            vm.$http
+            .post("https://jotvocab-api.herokuapp.com/vocab/user/list", { token: vm.userToken })
+            .then(response => {
+              return response.json(); // return an a javascript object
+            })
+            .then(data => {
+              vm.vocabList = data[0].words;
+          });
+          }).catch(function(error) {
+            console.log(error);
+          });
+        }
       });
-      var userCredential = {
-        token: this.userToken
-      };
-      this.$http
-        .post("https://jotvocab-api.herokuapp.com/vocab/user/list", userCredential)
-        .then(response => {
-          return response.json(); // return an a javascript object
-        })
-        .then(data => {
-          this.vocabList = data[0].words;
-        });
     }
   },
   created() {
