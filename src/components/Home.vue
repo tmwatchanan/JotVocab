@@ -4,8 +4,10 @@
         <!-- <pre>current user: {{user}}</pre> -->
         <!-- <pre>{{ entry }}</pre> -->
         <hr/>
-        <div id="search-box"v style="margin: 10px;">
-          Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord">
+        <div id="search-box">
+          <div style="width: 30%; margin: auto;">
+          Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord" class="form-control">
+          </div>
           <br>
           <span id="first" style="color: red;">Press Enter to Search Any Word...</span>
         </div>
@@ -18,7 +20,7 @@
           </table>
           <div style="margin: 10px">
             Add some comment : <input type="text" id="comment" name="comment">
-            <button @click="submitdata">Submit</button>
+            <button @click="submitdata" class="btn btn-success">Add</button>
           </div>
           </div>
         </div>
