@@ -1,9 +1,17 @@
 <template>
   <div>
-      <button @click="getMyVocabList">Get MyVocab List</button>
-      <pre>{{ userToken }}</pre>
+      <!-- <button @click="playsound('hello')">Get MyVocab List</button> -->
+      <!-- <pre>{{ userToken }}</pre> -->
       <!-- <pre>{{ user }}</pre> -->
-      <pre>{{ vocabList }}</pre>
+      <!-- <pre>{{ vocabList }}</pre> -->
+      <div id="list" class="table-users">
+        <div class="header">
+          <h4>{{ this.user.displayName }}'s List</h4>
+        </div>
+        <table id="vocablist" cellspacing="0">
+          <tr><th>Times</th><th>Word</th><th>Definition</th><th>Comment</th></tr>
+        </table>
+      </div>
   </div>
 </template>
 
@@ -26,23 +34,79 @@ export default {
   methods: {
     getMyVocabList() {
       var vm = this;
-      firebase.auth().onAuthStateChanged(function (currentUser) {
+      firebase.auth().onAuthStateChanged(function(currentUser) {
         if (currentUser) {
-          currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-            vm.userToken = idToken;
-            vm.$http
-            .post("https://jotvocab-api.herokuapp.com/vocab/user/list", { token: vm.userToken })
-            .then(response => {
-              return response.json(); // return an a javascript object
+          currentUser
+            .getIdToken(/* forceRefresh */ true)
+            .then(function(idToken) {
+              vm.userToken = idToken;
+              vm.$http
+                .post("https://jotvocab-api.herokuapp.com/vocab/user/list", {
+                  token: vm.userToken
+                })
+                .then(response => {
+                  return response.json(); // return an a javascript object
+                })
+                .then(data => {
+                  vm.vocabList = data.words;
+
+                  var tb = document.getElementById("vocablist");
+
+                  for (var i = 0; i < vm.vocabList.length; i++) {
+                    var result = vm.vocabList[i];
+
+                    var tr = document.createElement("tr");
+                    tr.setAttribute("id", "row" + i);
+                    tb.appendChild(tr);
+
+                    var t = new Date(Number(vm.vocabList[i].timestamp));
+
+                    var times = document.createElement("td");
+                    times.appendChild(document.createTextNode(t.getMonth() + "/" + t.getDate() + "/" + t.getFullYear() + " " + t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()));
+                    document.getElementById("row" + i).appendChild(times);
+
+                    var word = document.createElement("td");
+                    word.appendChild(
+                      document.createTextNode(vm.vocabList[i].word)
+                    );
+                    // word.innerHTML += '<input align="right" @click="playsound(\'' + vm.vocabList[i].word + '\')" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" />';
+                    var play = document.createElement("input");
+                    play.setAttribute("type", "image");
+                    play.setAttribute(
+                      "src",
+                      "http://www.freeiconspng.com/uploads/speaker-icon-27.png"
+                    );
+                    play.setAttribute(
+                      "onClick",
+                      'responsiveVoice.speak("' + vm.vocabList[i].word + '")'
+                    );
+                    play.style.height = "15px";
+                    play.style.width = "15px";
+                    word.appendChild(play);
+                    document.getElementById("row" + i).appendChild(word);
+
+                    var def = document.createElement("td");
+                    def.appendChild(
+                      document.createTextNode(vm.vocabList[i].definition)
+                    );
+                    document.getElementById("row" + i).appendChild(def);
+
+                    var comment = document.createElement("td");
+                    comment.appendChild(
+                      document.createTextNode(vm.vocabList[i].comment)
+                    );
+                    document.getElementById("row" + i).appendChild(comment);
+                  }
+                });
             })
-            .then(data => {
-              vm.vocabList = data[0].words;
-          });
-          }).catch(function(error) {
-            console.log(error);
-          });
+            .catch(function(error) {
+              console.log(error);
+            });
         }
       });
+    },
+    playsound(word) {
+      responsiveVoice.speak(word);
     }
   },
   created() {
@@ -141,13 +205,13 @@ table tr:nth-child(2n + 1) {
     position: absolute;
   }
   td:nth-child(2):before {
-    content: "Name:";
+    content: "Time:";
   }
   td:nth-child(3):before {
-    content: "Email:";
+    content: "Word:";
   }
   td:nth-child(4):before {
-    content: "Phone:";
+    content: "Definition:";
   }
   td:nth-child(5):before {
     content: "Comments:";
