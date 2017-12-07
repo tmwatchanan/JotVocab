@@ -68,7 +68,7 @@ export default {
   methods: {
     searchWordInDict() {
       this.$http
-        .get("http://jotvocab-api.herokuapp.com/thaidict/" + this.searchWord)
+        .get("https://jotvocab-api.herokuapp.com/thaidict/" + this.searchWord)
         .then(response => {
           return response.json(); // return an a javascript object
         })
