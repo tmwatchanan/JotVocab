@@ -8,17 +8,18 @@
           Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord">
           <br>
           <span id="first" style="color: red;">Press Enter to Search Any Word...</span>
-
         </div>
         <div id="definition" class="table-users" style="visibility: hidden;">
           <div class="header">
-            <span style="display: inline-flex;"><h1>{{ this.entry[0].search }}</h1>  <input align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
+            <span style="display: inline-flex;"><h1 id="search">{{ this.entry[0].search }}</h1>  <input id="play" align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
           </div>
+          <div id="showdef">
           <table id="definition_table" cellspacing="0">
           </table>
           <div style="margin: 10px">
             Add some comment : <input type="text" id="comment" name="comment">
             <button @click="submitdata">Submit</button>
+          </div>
           </div>
         </div>
     </div>
@@ -29,6 +30,8 @@ import { mapGetters } from "vuex";
 import firebase from "firebase";
 import router from "../router";
 import { wordAPIConfig } from "../helpers/apiConfigs";
+import SimpleVueValidation from 'simple-vue-validator';
+var Validator = SimpleVueValidation.Validator;
 
 export default {
   name: "hello",
@@ -36,13 +39,20 @@ export default {
     return {
       msg: "Welcome to JotVocab App",
       searchWord: "computer",
-      entry: ""
+      entry: []
     };
   },
   computed: {
     ...mapGetters({
       user: "user"
     })
+  },
+  validators: {
+    searchWord: function(value) {
+      return Validator.value(value)
+        .required()
+        .regex("^[A-Za-z ]*$", "Must only contain alphabetic characters.");
+    }
   },
   methods: {
     searchWordInDict() {
@@ -65,6 +75,10 @@ export default {
           for (var i = 0; i < this.entry.length; i++) {
             var result = this.entry[i];
 
+            document.getElementById("showdef").style.visibility = "visible";
+            document.getElementById("search").innerHTML = this.entry[0].search;
+            document.getElementById("play").style.visibility = "visible";
+
             var tr = document.createElement("tr");
             tr.setAttribute("id", "row" + i);
             tb.appendChild(tr);
@@ -74,73 +88,73 @@ export default {
             document.getElementById("row" + i).appendChild(n);
 
             var def = document.createElement("td");
-            if (result.type != null) {
-              var type = "";
-              switch (result.type) {
-                case "ABBR":
-                  type = "Abbreviation";
-                  break;
-                case "ADJ":
-                  type = "Adjective";
-                  break;
-                case "ADV":
-                  type = "Adverb";
-                  break;
-                case "AUX":
-                  type = "Auxiliary verb";
-                  break;
-                case "CLAS":
-                  type = "Classifier";
-                  break;
-                case "CONJ":
-                  type = "Conjunction";
-                  break;
-                case "DET":
-                  type = "Determiner";
-                  break;
-                case "IDM":
-                  type = "Idiom";
-                  break;
-                case "INT":
-                  type = "Interjection";
-                  break;
-                case "N":
-                  type = "Noun";
-                  break;
-                case "PHRV":
-                  type = "Pharse verb";
-                  break;
-                case "PREP":
-                  type = "Preposition";
-                  break;
-                case "PRF":
-                  type = "Prefix";
-                  break;
-                case "PRON":
-                  type = "Pronoun";
-                  break;
-                case "SL":
-                  type = "Slang";
-                  break;
-                case "SUF":
-                  type = "Suffix";
-                  break;
-                case "V":
-                  type = "verb";
-                  break;
-                case "VI":
-                  type = "Transitive verb";
-                  break;
-                case "VT":
-                  type = "Intransitive verb";
-                  break;
-                case "VI, VT":
-                  type = "Intransitive and Transitive verb";
-                  break;
-              }
-
-              def.innerHTML = '<em style="color: red">[' + type + "]</em> ";
+            def.setAttribute("id", "def" + i);
+            var type = "";
+            switch (result.type) {
+              case "ABBR":
+                type = "Abbreviation";
+                break;
+              case "ADJ":
+                type = "Adjective";
+                break;
+              case "ADV":
+                type = "Adverb";
+                break;
+              case "AUX":
+                type = "Auxiliary verb";
+                break;
+              case "CLAS":
+                type = "Classifier";
+                break;
+              case "CONJ":
+                type = "Conjunction";
+                break;
+              case "DET":
+                type = "Determiner";
+                break;
+              case "IDM":
+                type = "Idiom";
+                break;
+              case "INT":
+                type = "Interjection";
+                break;
+              case "N":
+                type = "Noun";
+                break;
+              case "PHRV":
+                type = "Pharse verb";
+                break;
+              case "PREP":
+                type = "Preposition";
+                break;
+              case "PRF":
+                type = "Prefix";
+                break;
+              case "PRON":
+                type = "Pronoun";
+                break;
+              case "SL":
+                type = "Slang";
+                break;
+              case "SUF":
+                type = "Suffix";
+                break;
+              case "V":
+                type = "verb";
+                break;
+              case "VI":
+                type = "Transitive verb";
+                break;
+              case "VT":
+                type = "Intransitive verb";
+                break;
+              case "VI, VT":
+                type = "Intransitive and Transitive verb";
+                break;
             }
+
+            def.innerHTML = '<em style="color: red">[' + type + "]</em> ";
+
             def.innerHTML += result.result;
             document.getElementById("row" + i).appendChild(def);
 
@@ -171,9 +185,18 @@ export default {
             if (i == 0) {
               select.checked = true;
             }
-            select.setAttribute("value", result.result);
+            select.setAttribute(
+              "value",
+              document.getElementById("def" + i).innerHTML
+            );
             document.getElementById("row" + i).appendChild(select);
             document.getElementById("select" + i).style.margin = "10px";
+          }
+
+          if (this.entry.length == 0) {
+            document.getElementById("showdef").style.visibility = "collapse";
+            document.getElementById("search").innerHTML = "Word not found!";
+            document.getElementById("play").style.visibility = "hidden";
           }
         });
     },
@@ -183,42 +206,53 @@ export default {
     submitdata() {
       // console.log(this.user);
       var vm = this;
-      firebase
-        .auth()
-        .currentUser.getIdToken(/* forceRefresh */ true)
-        .then(function(idToken) {
-          vm.userToken = idToken;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      var data = {
-        uid: this.user.uid,
-        token: this.userToken,
-        word: this.entry[0].search,
-        definition: $("input[name='selradio']:checked").val(),
-        comment: document.getElementById("comment").value
-      };
-      console.log(data);
-      this.$http
-        .post("https://jotvocab-api.herokuapp.com/vocab", data, {
-          emulateJSON: true
-          //   params: {
-          //     id: this.uid
-          //   }
-        })
-        .then(
-          response => {
-            // define how to deal with the response
-            console.log(response);
-            alert("A new vocab has been added.");
-            // this.fetchData();
-          },
-          error => {
-            // define how to deal with error
-            console.log(error);
-          }
-        );
+      firebase.auth().onAuthStateChanged(function(currentUser) {
+        if (currentUser) {
+          currentUser
+            .getIdToken(/* forceRefresh */ true)
+            .then(function(idToken) {
+              vm.userToken = idToken;
+              var data = {
+                uid: vm.user.uid,
+                token: vm.userToken,
+                word: vm.entry[0].search,
+                definition: $("input[name='selradio']:checked").val(),
+                comment: document.getElementById("comment").value
+              };
+              console.log(data);
+              vm.$http
+                .post(
+                  "https://jotvocab-api.herokuapp.com/vocab/user/add",
+                  data,
+                  {
+                    emulateJSON: true
+                    //   params: {
+                    //     id: vm.uid
+                    //   }
+                  }
+                )
+                .then(
+                  response => {
+                    // define how to deal with the response
+                    console.log(response);
+                    alert("A new vocab has been added.");
+                    // vm.fetchData();
+                  },
+                  error => {
+                    // define how to deal with error
+                    console.log(error);
+                    alert("This word and definition are already existed!");
+                  }
+                );
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        } else {
+          // user NOT found
+          console.log("User NOT found!");
+        }
+      });
     }
   },
   created() {

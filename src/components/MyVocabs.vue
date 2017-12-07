@@ -62,7 +62,21 @@ export default {
                     var t = new Date(Number(vm.vocabList[i].timestamp));
 
                     var times = document.createElement("td");
-                    times.appendChild(document.createTextNode(t.getMonth() + "/" + t.getDate() + "/" + t.getFullYear() + " " + t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds()));
+                    times.appendChild(
+                      document.createTextNode(
+                        t.getMonth() +
+                          "/" +
+                          t.getDate() +
+                          "/" +
+                          t.getFullYear() +
+                          " " +
+                          t.getHours() +
+                          ":" +
+                          t.getMinutes() +
+                          ":" +
+                          t.getSeconds()
+                      )
+                    );
                     document.getElementById("row" + i).appendChild(times);
 
                     var word = document.createElement("td");
@@ -86,9 +100,7 @@ export default {
                     document.getElementById("row" + i).appendChild(word);
 
                     var def = document.createElement("td");
-                    def.appendChild(
-                      document.createTextNode(vm.vocabList[i].definition)
-                    );
+                    def.innerHTML = vm.vocabList[i].definition;
                     document.getElementById("row" + i).appendChild(def);
 
                     var comment = document.createElement("td");
