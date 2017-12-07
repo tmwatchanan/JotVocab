@@ -3,21 +3,22 @@
         <h2>{{ msg }}</h2>
         <!-- <pre>current user: {{user}}</pre> -->
         <!-- <pre>{{ entry }}</pre> -->
+        <pre>{{ searchWord }}</pre>
         <hr/>
         <div id="search-box"v style="margin: 10px;">
-          Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord">
+          Search word : <input @keyup.enter="searchWordInDict" v-model.trim="searchWord.word">
           <br>
           <span id="first" style="color: red;">Press Enter to Search Any Word...</span>
 
         </div>
         <div id="definition" class="table-users" style="visibility: hidden;">
           <div class="header">
-            <span style="display: inline-flex;"><h1>{{ this.entry[0].search }}</h1>  <input align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
+            <span style="display: inline-flex;"><h1>{{ entry[0].search }}</h1>  <input align="right" @click="playsound" type="image" src="http://www.freeiconspng.com/uploads/speaker-icon-27.png" value="Play" style="width: 30px; height: 30px;" /></span>
           </div>
           <table id="definition_table" cellspacing="0">
           </table>
           <div style="margin: 10px">
-            Add some comment : <input type="text" id="comment" name="comment">
+            Add some comment : <input v-model.trim="searchWord.comment" type="text" id="comment" name="comment">
             <button @click="submitdata">Submit</button>
           </div>
         </div>
@@ -35,8 +36,12 @@ export default {
   data() {
     return {
       msg: "Welcome to JotVocab App",
-      searchWord: "computer",
-      entry: ""
+      searchWord: {
+        word: '',
+        definition: '',
+        comment: ''
+      },
+      entry: [""]
     };
   },
   computed: {
@@ -47,7 +52,7 @@ export default {
   methods: {
     searchWordInDict() {
       this.$http
-        .get("http://jotvocab-api.herokuapp.com/thaidict/" + this.searchWord)
+        .get("http://jotvocab-api.herokuapp.com/thaidict/" + this.searchWord.word)
         .then(response => {
           return response.json(); // return an a javascript object
         })
@@ -183,41 +188,33 @@ export default {
     submitdata() {
       // console.log(this.user);
       var vm = this;
-      firebase
-        .auth()
-        .currentUser.getIdToken(/* forceRefresh */ true)
-        .then(function(idToken) {
-          vm.userToken = idToken;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      var data = {
-        token: this.userToken,
-        word: this.entry[0].search,
-        definition: $("input[name='selradio']:checked").val(),
-        comment: document.getElementById("comment").value
-      };
-      console.log(data);
-      this.$http
-        .post("https://jotvocab-api.herokuapp.com/vocab/user/add", data, {
-          emulateJSON: true
-          //   params: {
-          //     id: this.uid
-          //   }
-        })
-        .then(
-          response => {
-            // define how to deal with the response
-            console.log(response);
-            alert("A new vocab has been added.");
-            // this.fetchData();
-          },
-          error => {
-            // define how to deal with error
+      firebase.auth().onAuthStateChanged(function (currentUser) {
+        if (currentUser) {
+          currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+            vm.userToken = idToken;
+            var data = {
+              token: vm.userToken,
+              word: vm.searchWord.word,
+              definition: $("input[name='selradio']:checked").val(),
+              comment: vm.searchWord.comment
+            };
+            vm.$http
+            .post("https://jotvocab-api.herokuapp.com/vocab/user/add", data, {
+              emulateJSON: true
+            })
+            .then(response => {
+                console.log(response);
+                alert("A new vocab has been added.");
+              },
+              error => {
+              // define how to deal with error
+              console.log(error);
+            });
+          }).catch(function(error) {
             console.log(error);
-          }
-        );
+          });
+        }
+      });
     }
   },
   created() {
