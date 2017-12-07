@@ -30,7 +30,7 @@ High-level Objectives
 This project is built using Vue.js webpack template (`vue init webpack JotVocab`)
 
 #### Related Global Packages
-+
++ firebase-tools@3.16.0
 
 #### Related Local Dependencies
 + vue-router@3.0.1
