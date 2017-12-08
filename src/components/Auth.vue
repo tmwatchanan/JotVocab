@@ -7,7 +7,7 @@
 import { mapGetters } from "vuex";
 import firebase from "firebase";
 const uiConfig = {
-  signInSuccessUrl: "/success",
+  signInSuccessUrl: "/",
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     firebase.auth.EmailAuthProvider.PROVIDER_ID
