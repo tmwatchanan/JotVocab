@@ -11,10 +11,10 @@
               <i class="icon-home icon-white"></i>
               <router-link to="/" class="nav-link" active-class="active" exact>Home</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="user">
               <router-link to="/myvocabs" class="nav-link" active-class="active" exact>MyVocabs</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="user">
               <router-link to="/random" class="nav-link" active-class="active" exact>RandomGame</router-link>
             </li>
           </ul>

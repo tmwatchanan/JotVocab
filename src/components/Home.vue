@@ -24,7 +24,7 @@
           <div id="showdef">
           <table id="definition_table" cellspacing="0">
           </table>
-          <div style="margin: 10px">
+          <div v-if="user" style="margin: 10px">
             Add some comment : <input type="text" id="comment" name="comment">
             <button @click="submitdata" class="btn btn-success">Add</button>
           </div>
