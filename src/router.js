@@ -5,6 +5,7 @@ import AuthSuccess from './components/AuthSuccess';
 import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 import MyVocabs from './components/MyVocabs';
+import Random from './components/Random';
 
 // redirect from accountchooser is losing hash and redirects to the root
 // so I check query string if it exists
@@ -29,7 +30,8 @@ const router = new VueRouter({
         { path: '/success', component: AuthSuccess },
         { path: '/profile', component: Profile },
         { path: '/editprofile', component: EditProfile },
-        { path: '/myvocabs', component: MyVocabs }
+        { path: '/myvocabs', component: MyVocabs },
+        { path: '/random', component: Random }
     ],
 });
 router.beforeEach((to, from, next) => {

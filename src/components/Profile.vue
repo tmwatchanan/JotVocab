@@ -4,6 +4,11 @@
   <a :href="user.photoURL">
     <img :src="user.photoURL" style="height: 180px">
   </a>
+  <hr>
+  <h3>User Token:</h3>
+  <pre>{{ userToken }}</pre>
+  <hr>
+  <pre>{{ user }}</pre>
   <!-- <pre>
     {{user}}
   </pre> -->
@@ -14,8 +19,14 @@
 
 
 <script>
+import firebase from 'firebase';
 import { mapGetters } from "vuex";
 export default {
+  data() {
+    return {
+      userToken: ""
+    };
+  },
   name: "success",
   computed: {
     ...mapGetters({
@@ -36,6 +47,23 @@ export default {
     joined() {
       return this.user.createdAt;
     }
+  },
+  methods: {
+    getUserToken() {
+      var vueThis = this;
+      firebase.auth().onAuthStateChanged(function(currentUser) {
+          if (currentUser) {
+            currentUser
+              .getIdToken(/* forceRefresh */ true)
+              .then(function(idToken) {
+                vueThis.userToken = idToken;
+              })
+          }
+      });
+    }
+  },
+  created() {
+    this.getUserToken();
   }
 };
 </script>

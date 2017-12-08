@@ -100,13 +100,13 @@ export default {
                     response => {
                       // define how to deal with the response
                       console.log(response);
-                      alert("Vocab Has Deleted.");
+                      vm.getMyVocabList();
                       // vm.fetchData();
                     },
                     error => {
                       // define how to deal with error
                       console.log(error);
-                      alert("This word and definition are already existed!");
+                      alert("ERROR! this vocab can not be deleted");
                     }
                   );
               })
@@ -150,9 +150,10 @@ export default {
                     response => {
                       // define how to deal with the response
                       console.log(response);
-                      alert("Vocab's comment has been edited.");
+                      // alert("Vocab's comment has been edited.");
+                      vm.getMyVocabList();
                       // vm.fetchData();
-                      location.reload();
+                      // location.reload();
                     },
                     error => {
                       // define how to deal with error

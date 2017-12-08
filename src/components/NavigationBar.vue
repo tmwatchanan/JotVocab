@@ -12,10 +12,10 @@
               <router-link to="/" class="nav-link" active-class="active" exact>Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/dictionary" class="nav-link" active-class="active" exact>Dictionary</router-link>
+              <router-link to="/myvocabs" class="nav-link" active-class="active" exact>MyVocabs</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/myvocabs" class="nav-link" active-class="active" exact>MyVocabs</router-link>
+              <router-link to="/random" class="nav-link" active-class="active" exact>RandomGame</router-link>
             </li>
           </ul>
         </div>
