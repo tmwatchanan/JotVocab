@@ -215,10 +215,10 @@ export default {
       responsiveVoice.speak(this.entry[0].search);
     },
     submitdata() {
+      var vm = this;
       // console.log(this.user);
       this.$validate().then(function(success) {
         if (success) {
-          var vm = this;
           firebase.auth().onAuthStateChanged(function(currentUser) {
             if (currentUser) {
               currentUser
