@@ -10,7 +10,7 @@ Technical Objectives
 - [x] 4. ResponsiveVoice.JS (play sound from text to voice)
 - [ ] ~~5. Oxford Dictionaries API (search meaning of a word)~~
 - [x] 6. Words API (dictionary + thesaurus)
-- [ ] 7. VeeValidate (Input Validation)
+- [x] 7. SimpleVueValidation (Input Validation)
 - [x] 8. Firebase (authentication)
 - [x] 9. Express.js (back-end framework)
 - [x] 10. Heroku (for deploy back-end)
